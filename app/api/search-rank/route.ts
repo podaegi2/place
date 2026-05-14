@@ -84,8 +84,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Railway(Linux) 환경에서는 시스템 Chromium 사용
+  const isProduction = process.env.NODE_ENV === "production";
   const browser = await puppeteer.launch({
     headless: true,
+    executablePath: isProduction
+      ? (process.env.CHROMIUM_PATH ?? "/usr/bin/chromium")
+      : undefined,
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
